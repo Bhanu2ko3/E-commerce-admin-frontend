@@ -1,19 +1,47 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../Context/AuthContext"; // AuthContext import කරන්න
+import axios from "axios";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
-  const handleLogin = (e) => {
+  const navigate = useNavigate();
+  const { login } = useAuth();
+  const handleLogin = async (e) => {
     e.preventDefault();
-    console.log("Login with:", { email, password });
+    setError("");
+
+    try {
+      const response = await axios.post("http://localhost:5000/api/auth/login", {
+        email,
+        password,
+      });
+
+      const { token, user } = response.data;
+
+      // Save user & token in context
+      login(user, token);
+
+      // Save user & token in localStorage for persistence
+      localStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("token", token);
+
+      navigate("/"); // Redirect to home page after login
+    } catch (error) {
+      console.error("Login error:", error);
+      setError("Invalid email or password. Please try again.");
+    }
   };
+
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 bg-white shadow-lg rounded-lg">
         <h2 className="text-2xl font-bold text-center text-gray-800">Login</h2>
+        {error && <p className="text-red-500 text-sm text-center mt-2">{error}</p>}
         <form onSubmit={handleLogin} className="mt-4">
           <div>
             <label className="block text-sm font-semibold text-gray-600">Email</label>

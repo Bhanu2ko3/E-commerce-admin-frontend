@@ -47,7 +47,7 @@ export default function Products() {
             <motion.button
               className="mt-4 w-full bg-[#1B5E20] text-white py-2 rounded-md hover:bg-[#66BB6A] focus:outline-none focus:ring focus:ring-[#1B5E20]"
               whileHover={{ scale: 1.05 }}
-              onClick={() => navigate("/productOverview", { state: product })}
+              onClick={() => navigate("/productOverview", { state: { id: product._id } })} // ✅ Product ID Only
             >
               Order Now
             </motion.button>

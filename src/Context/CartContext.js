@@ -1,59 +1,82 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import axios from "axios";
 
 const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-  const [cartItems, setCartItems] = useState(() => {
-    const savedCart = localStorage.getItem("cart");
-    return savedCart ? JSON.parse(savedCart) : [];
-  });
+  const [cartItems, setCartItems] = useState([]);
 
+  // 🛒 Fetch cart from backend
   useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cartItems));
-  }, [cartItems]);
-
-  // 🔥 Add item to cart (considering unique pack sizes)
-  const addToCart = (item) => {
-    setCartItems((prevCart) => {
-      const existingItemIndex = prevCart.findIndex(
-        (cartItem) => cartItem.id === item.id && cartItem.packQuantity === item.packQuantity
-      );
-
-      if (existingItemIndex !== -1) {
-        // If item with same pack size exists, update quantity
-        return prevCart.map((cartItem, index) =>
-          index === existingItemIndex
-            ? { ...cartItem, quantity: cartItem.quantity + item.quantity }
-            : cartItem
-        );
-      } else {
-        // Else, add new item with different pack size
-        return [...prevCart, item];
+    const fetchCart = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.warn("Unauthorized: Please log in first!"); // 🔹 Console log instead of alert
+          return;
+        }
+  
+        const response = await axios.get("http://localhost:5000/api/cart", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+  
+        setCartItems(response.data.items);
+      } catch (error) {
+        console.error("Error fetching cart:", error);
       }
-    });
+    };
+  
+    fetchCart();
+  }, []);
+  
+  
+
+  const addToCart = async (item) => {
+    try {
+      const { data } = await axios.post(
+        "http://localhost:5000/api/cart/add", // ✅ Full API path
+        { productId: item.id, quantity: item.quantity },
+        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } } // ✅ Token pass
+      );
+      setCartItems(data.cart.items);
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+    }
+  };
+  
+
+  // 🛒 Remove specific item (Backend Sync)
+  const removeFromCart = async (id) => {
+    try {
+      const { data } = await axios.delete(`/api/cart/remove/${id}`, { withCredentials: true });
+      setCartItems(data.cart.items);
+    } catch (error) {
+      console.error("Error removing item:", error);
+    }
   };
 
-  // 🔥 Remove specific pack size of an item
-  const removeFromCart = (id, packQuantity) => {
-    setCartItems((prevCart) => prevCart.filter(
-      (item) => !(item.id === id && item.packQuantity === packQuantity)
-    ));
+  // 🛒 Update item quantity (Backend Sync)
+  const updateQuantity = async (id, quantity) => {
+    try {
+      const { data } = await axios.put(
+        "/api/cart/update",
+        { productId: id, quantity },
+        { withCredentials: true }
+      );
+      setCartItems(data.cart.items);
+    } catch (error) {
+      console.error("Error updating quantity:", error);
+    }
   };
 
-  // 🔥 Update quantity of a specific pack size
-  const updateQuantity = (id, quantity, packQuantity) => {
-    setCartItems((prevCart) =>
-      prevCart.map((item) =>
-        item.id === id && item.packQuantity === packQuantity
-          ? { ...item, quantity: Math.max(1, quantity) }
-          : item
-      )
-    );
-  };
-
-  const clearCart = () => {
-    setCartItems([]);
-    localStorage.removeItem("cart");
+  // 🛒 Clear Cart (Backend Sync)
+  const clearCart = async () => {
+    try {
+      await axios.delete("/api/cart/clear", { withCredentials: true });
+      setCartItems([]);
+    } catch (error) {
+      console.error("Error clearing cart:", error);
+    }
   };
 
   return (

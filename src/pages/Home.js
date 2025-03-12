@@ -1,15 +1,15 @@
 import React from "react";
-import Hero from "../components/Hero";
 import About from "./About";
 import Footer from "../components/Footer";
 import Products from "./Products";
 import Contact from "./Contact";
 import CustomerReviews from "../components/CustomerReviews";
+import Dashboard from "./Dashboard";
 
 const Home = () => {
   return (
     <div>
-      <Hero />
+      <Dashboard />
       <Products />
       <div class="flex justify-center">
       <a
