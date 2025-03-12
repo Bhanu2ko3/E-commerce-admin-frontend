@@ -1,0 +1,24 @@
+{
+  "files": {
+    "main.css": "/static/css/main.07100da7.css",
+    "main.js": "/static/js/main.e3ee37d7.js",
+    "static/js/488.05cd8ba1.chunk.js": "/static/js/488.05cd8ba1.chunk.js",
+    "static/media/menu.png": "/static/media/menu.063e9a33da2e20acfd48.png",
+    "static/media/asmi.jpg": "/static/media/asmi.746771cb4b1a602c08e4.jpg",
+    "static/media/aluwa.jpg": "/static/media/aluwa.3b0e82556fa8796150e7.jpg",
+    "static/media/logo.png": "/static/media/logo.ba46cc8f4148e9ef386b.png",
+    "static/media/kondakawum.jpg": "/static/media/kondakawum.3ceec4f5795ede71ea5f.jpg",
+    "static/media/munkawum.jpg": "/static/media/munkawum.4f06e0ff944e74078003.jpg",
+    "static/media/kokis.jpg": "/static/media/kokis.5a58eef6cf408a9f05f4.jpg",
+    "static/media/paniwalalu.jpg": "/static/media/paniwalalu.4d620c0b41222d625e96.jpg",
+    "service-worker.js": "/service-worker.js",
+    "index.html": "/index.html",
+    "main.07100da7.css.map": "/static/css/main.07100da7.css.map",
+    "main.e3ee37d7.js.map": "/static/js/main.e3ee37d7.js.map",
+    "488.05cd8ba1.chunk.js.map": "/static/js/488.05cd8ba1.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.07100da7.css",
+    "static/js/main.e3ee37d7.js"
+  ]
+}
